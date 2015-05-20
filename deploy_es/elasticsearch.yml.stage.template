@@ -1,0 +1,32 @@
+# Cluster info
+cluster.name: Kankan
+
+# Index
+index.refresh_interval: 30s
+index.merge.scheduler.max_thread_count: 1
+index.translog.flush_threshold_size : 500mb
+
+# Zen discovery
+discovery.zen.ping.unicast.hosts: ["10.161.244.150", "10.161.246.164", "10.161.244.252", "10.161.245.204"]
+
+# Log collection
+marvel.agent.exporter.es.hosts: ["srmrd01:9200"]
+
+# Index info
+index:
+  analysis:
+    analyzer:
+      ik:
+          alias: [news_analyzer_ik,ik_analyzer]
+          type: org.elasticsearch.index.analysis.IkAnalyzerProvider
+      ik_max_word:
+          type: ik
+          use_smart: false
+      ik_smart:
+          type: ik
+          use_smart: true
+
+# for Cores/Sense
+http.cors.enabled: true
+http.cors.allow-origin: /.*/
+http.cors.allow-credentials: true

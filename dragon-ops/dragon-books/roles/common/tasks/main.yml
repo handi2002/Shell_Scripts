@@ -1,0 +1,64 @@
+---
+## copy the DNS files
+- name: update hosts record
+  copy: src=sys/resolv.conf.20141124 dest=/etc/resolv.conf backup=yes
+
+## Yum repo
+- name: update yum conf
+  copy: src=conf/dragon.repo dest=/etc/yum.repos.d/dragon.repo
+  
+## copy the hosts files
+- name: update hosts record
+  copy: src=sys/hosts dest=/etc/hosts backup=yes
+ 
+## OS Upgrade 
+- name: upgrade all packages
+  yum: name=* state=latest
+
+## Enable packages
+- name: install necessary packages
+  yum: name={{item}} state=present
+  with_items:
+   - jdk
+   - opsview-agent
+   - collectd
+   - nfs-utils
+
+## create Unix Group
+- name: create unix adm group
+  group: name=unix-adms gid=601 state=present
+
+## create user for Unix Admins
+
+- name: create unix user xxx
+  user: name=xxx comment="xxx@xxx.com" uid=602 group=unix-adms
+- name: put xxx key 
+  authorized_key: user=xxx key="{{ lookup('file', 'keys/xxx.pub.key') }}"
+
+## create Sudo
+- name: update sudoers
+  copy: src=sys/sudoers.hbase dest=/etc/sudoers validate='visudo -cf %s'
+
+## iptables
+
+## update script
+- name: update the hostname
+  script: scripts/update_hostname.sh
+
+## update motd
+- name: update motd instantly
+  script: scripts/update_motd.sh 
+- name: update motd to cronttab
+  copy: src=scripts/update_motd.sh dest=/etc/cron.hourly/1updatemotd mode=755
+
+## update monitor
+- name: update nrpe settings
+  script: scripts/update_nrpe.sh
+  notify: restart opsview agent
+- name: update collectd config
+  copy: src=conf/collectd.agent.conf dest=/etc/collectd.conf
+  notify: restart collectd
+
+## run some dirty work
+- name: chkconfig on collectd
+  command: /sbin/chkconfig collectd on 

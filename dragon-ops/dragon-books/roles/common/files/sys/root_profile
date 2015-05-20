@@ -1,0 +1,16 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+#
+# Managed by Git, consider update Git before manually Edit
+#
+
+PATH=$PATH:$HOME/bin
+PS1="[\[\033[1;31m\]\u\[\033[0m\]@\h:\w]# "
+
+export PATH PS1

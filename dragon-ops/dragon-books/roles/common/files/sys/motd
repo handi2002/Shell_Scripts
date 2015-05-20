@@ -1,0 +1,9 @@
+##############################################
+#
+# operating system is CentOS 6.5
+#
+# Be careful: box is managed by Puppet
+#
+# domain is rm.symbiosys.com.cn
+#
+##############################################

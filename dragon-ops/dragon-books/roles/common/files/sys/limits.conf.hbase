@@ -1,0 +1,9 @@
+## Managed by Git, consider update Git before manually Edit
+
+## Adjust for the proxy
+hbuser        	soft    nproc           4096
+hbuser        	hard    nproc           8192
+
+## file open
+* soft nofile 65535
+* hard nofile 65535

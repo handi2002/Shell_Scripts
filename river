@@ -1,0 +1,66 @@
+#!/bin/bash
+# description: Starts and stops hbase river process
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+BASEDIR="/opt/script/sync"
+exec="$BASEDIR/bin/elasticsearch-hbase-river"
+LOG="$BASEDIR/out.log"
+EL_HOSTS="elasticsearch://xxx:9300"
+ZK="xxxhb04"
+
+#pidfile="/var/run/river/river.pid"
+
+HEAP=4096
+LOG_HOURS=2
+
+
+
+help(){
+   echo "usage: $0 start|stop -l <LOG_HOURS>" 
+   exit 1  
+}
+
+while getopts l: opt ; do
+  case $opt in
+      l) LOG_HOURS=$OPTARG ;;
+      \?) help;;
+  esac
+done
+
+start() {
+    [ -x $exec ] || exit 5
+    echo -n $"Starting elasticsearch-hbase-river: "
+ #   daemon --user ${EL_USER-deploy} "$exec $EL_HOSTS $ZK 10.168.168.194 10 $LOG_HOURS -J-Xmx4096m -J-Xms4096m > $LOG &"
+#    /bin/su - deploy -c "nohup $exec $EL_HOSTS $ZK 10.168.168.194 10 $LOG_HOURS -J-Xmx4096m -J-Xms4096m > $LOG &"
+    nohup $exec $EL_HOSTS $ZK 10.168.168.194 10 $LOG_HOURS -J-Xmx8000m -J-Xms8000m -J-XX:+UseConcMarkSweepGC -J-XX:CMSInitiatingOccupancyFraction=65 > $LOG &
+    retval=$?
+    echo
+    [ $retval -eq 0 ]
+    return $retval
+}
+
+stop() {
+    echo -n "Stoping elasticsearch-hbase-river: "
+    pid=`ps -ef | grep elasticsearch-hbase-river | grep -v grep | awk '{print $2}'`
+    kill $pid
+    retval=$?
+    echo
+    [ $retval -eq 0 ]
+    return $retval
+}
+
+
+case "$1" in
+    start)
+        $1
+        ;;
+    stop)
+        $1
+        ;;
+    *)
+        help
+        exit 1
+esac
+exit $?

@@ -1,0 +1,12 @@
+---
+- name: restart jboss 
+  service: name=jboss state=restarted
+
+- name: restart iptables
+  service: name=iptables state=restarted
+
+- name: restart opsview agent
+  service: name=opsview-agent state=restarted
+
+- name: restart collectd
+  service: name=collectd state=restarted

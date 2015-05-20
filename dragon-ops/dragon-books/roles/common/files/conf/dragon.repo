@@ -1,0 +1,4 @@
+[alocal]
+name=Dragon Local Yum
+baseurl= http://xxxrmmg01/yum
+gpgcheck = 0
